@@ -56,31 +56,46 @@ POST /api/analyze
 | `lib/recommend.ts` | 점수 기반 추천 엔진 (점수 = 고민 가중치 × 성분 효능 + 피부타입 보너스 − 민감성 페널티) |
 | `scripts/sync-products.mjs` | Shopify Admin API → `data/products.json` 동기화 |
 | `data/products.sample.json` | 동기화 전까지 쓰는 샘플 카탈로그 17종 |
-| `data/code-matrix.sample.json` | 매칭표(기준표) 포맷 예시 |
+| `data/code-matrix.json` | **기준표** — 16개 Skin Code × 단계별 제품 매칭 (아래 표 참고) |
 
-## 제품 매칭표(기준표)로 직접 매칭하기
+## 기준표 (16코드 × 단계 매칭) — 내장됨
 
-성분 엔진 대신(또는 함께) **직접 만든 기준표**로 코드별 추천을 고정할 수 있습니다.
+코드별 추천은 `data/code-matrix.json`의 **기준표**가 우선 적용됩니다.
+현재 샘플 카탈로그 기준으로 16개 코드 전부 작성돼 있고, 설계 원칙은:
 
-1. 스프레드시트로 **16개 코드 × 단계(클렌저/토너/세럼/보습/선크림…)** 표를 만들고
-   각 칸에 제품 **핸들**(상품 URL 마지막 부분)을 적습니다.
-2. `data/code-matrix.sample.json` 포맷대로 JSON으로 옮겨 `data/code-matrix.json`으로 저장합니다.
+- **O/D** → 클렌저·토너·보습의 텍스처 결정 (O: 젤·BHA·오일프리 / D: 크림·세라마이드)
+- **S** → 강한 액티브(레티놀·AHA) 제외, 시카 계열 우선 / **R** → 액티브 허용
+- **P** → 브라이트닝 세럼 (R이면 비타민C, S면 자극 적은 트라넥삼산)
+- **W** → 리뉴얼 케어 (R이면 레티놀 세럼, S이면 바쿠치올 함유 펩타이드 크림으로 대체)
+- O코드 공통: 주 1회 클레이 마스크 / 전 코드 공통: 미네랄 선크림
 
-```json
-{
-  "OSPT": {
-    "products": {
-      "cleanser": ["clarifying-gel-cleanser"],
-      "serum": ["centella-rescue-serum", "tranexamic-spot-fade-serum"],
-      "sunscreen": ["daily-mineral-spf50"]
-    }
-  }
-}
-```
+| 코드 | 클렌저 | 토너 | 세럼 (AM/PM) | 보습 |
+|---|---|---|---|---|
+| DRNT | Ceramide Cream | Hydra-Plump | Snail 92 · Vitamin C | Ceramide Barrier |
+| DRNW | Ceramide Cream | Hydra-Plump | Retinol 0.3 · Snail 92 | Peptide Firming |
+| DRPT | Ceramide Cream | Hydra-Plump | Vitamin C · Tranexamic | Ceramide Barrier |
+| DRPW | Ceramide Cream | Hydra-Plump | Retinol 0.3 · Tranexamic | Peptide Firming |
+| DSNT | Ceramide Cream | Cica Calming | Centella · Snail 92 | Ceramide Barrier |
+| DSNW | Ceramide Cream | Cica Calming | Centella · Snail 92 | Peptide Firming |
+| DSPT | Ceramide Cream | Cica Calming | Tranexamic · Centella | Ceramide Barrier |
+| DSPW | Ceramide Cream | Cica Calming | Tranexamic · Centella | Peptide Firming |
+| ORNT | Clarifying Gel | Clear-Skin AHA | Niacinamide · Vitamin C | Oil-Free Gel |
+| ORNW | Clarifying Gel | Clear-Skin AHA | Retinol 0.3 · Niacinamide | Oil-Free Gel |
+| ORPT | Clarifying Gel | Clear-Skin AHA | Vitamin C · Niacinamide | Oil-Free Gel |
+| ORPW | Clarifying Gel | Clear-Skin AHA | Retinol 0.3 · Tranexamic | Oil-Free Gel |
+| OSNT | Clarifying Gel | Cica Calming | Centella · Niacinamide | Oil-Free Gel |
+| OSNW | Clarifying Gel | Cica Calming | Centella · Niacinamide | Peptide Firming |
+| OSPT | Clarifying Gel | Cica Calming | Centella · Tranexamic | Oil-Free Gel |
+| OSPW | Clarifying Gel | Cica Calming | Tranexamic · Centella | Peptide Firming |
+
+수정 방법: `data/code-matrix.json`에서 각 칸의 **제품 핸들**(상품 URL 끝부분)만 교체하면 됩니다.
+실제 Shopify 제품을 동기화한 뒤 핸들을 갈아끼우는 방식.
+
+동작 규칙:
 
 - 표에 **없는 코드**나 카탈로그에 없는 핸들은 자동으로 성분 엔진으로 폴백 → 일부만 채워도 동작합니다.
-- 추천 사유 문구는 매칭표를 쓰더라도 성분 정보가 있으면 자동 생성됩니다.
-- 기준표(엑셀/시트)를 그대로 주시면 JSON 변환은 금방입니다.
+- 아이크림·마스크 같은 **보너스 단계는 고민 기반으로 자동 추가**됩니다 (예: 다크서클 고민 → 아이 세럼).
+- 추천 사유 문구("이 성분이 이 고민에 좋아요")는 기준표를 쓰더라도 성분 정보로 자동 생성됩니다.
 
 ---
 

@@ -85,7 +85,18 @@ export async function POST(request: Request) {
     if (matrixRow?.name) profile.skinCode.name = matrixRow.name;
     if (matrixRow?.tagline) profile.skinCode.tagline = matrixRow.tagline;
     const fromMatrix = matrixRow ? buildRoutineFromMatrix(matrixRow, profile, products) : [];
-    const routine = fromMatrix.length > 0 ? fromMatrix : buildRoutine(profile, products);
+
+    let routine = buildRoutine(profile, products);
+    if (fromMatrix.length > 0) {
+      // The matrix owns the core steps; concern-driven bonus steps (eye, mask)
+      // still come from the engine unless the matrix row covers that category.
+      const bonus = routine.filter(
+        (s) =>
+          (s.category === "mask" || s.category === "eye") &&
+          !fromMatrix.some((m) => m.category === s.category),
+      );
+      routine = [...fromMatrix, ...bonus];
+    }
 
     return NextResponse.json({ profile, routine });
   } catch (err) {

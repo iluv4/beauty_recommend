@@ -1,0 +1,154 @@
+{
+  "DRNT": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["hydra-plump-toner"],
+      "serum": ["snail-92-recovery-essence", "vitamin-c-15-brightening-serum"],
+      "moisturizer": ["ceramide-barrier-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DRNW": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["hydra-plump-toner"],
+      "serum": ["retinol-0-3-renewal-serum", "snail-92-recovery-essence"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DRPT": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["hydra-plump-toner"],
+      "serum": ["vitamin-c-15-brightening-serum", "tranexamic-spot-fade-serum"],
+      "moisturizer": ["ceramide-barrier-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DRPW": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["hydra-plump-toner"],
+      "serum": ["retinol-0-3-renewal-serum", "tranexamic-spot-fade-serum"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DSNT": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["centella-rescue-serum", "snail-92-recovery-essence"],
+      "moisturizer": ["ceramide-barrier-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DSNW": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["centella-rescue-serum", "snail-92-recovery-essence"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DSPT": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["tranexamic-spot-fade-serum", "centella-rescue-serum"],
+      "moisturizer": ["ceramide-barrier-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "DSPW": {
+    "products": {
+      "cleanser": ["ceramide-cream-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["tranexamic-spot-fade-serum", "centella-rescue-serum"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  },
+  "ORNT": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["clear-skin-liquid-toner"],
+      "serum": ["niacinamide-10-zinc-serum", "vitamin-c-15-brightening-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "ORNW": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["clear-skin-liquid-toner"],
+      "serum": ["retinol-0-3-renewal-serum", "niacinamide-10-zinc-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "ORPT": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["clear-skin-liquid-toner"],
+      "serum": ["vitamin-c-15-brightening-serum", "niacinamide-10-zinc-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "ORPW": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["clear-skin-liquid-toner"],
+      "serum": ["retinol-0-3-renewal-serum", "tranexamic-spot-fade-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "OSNT": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["centella-rescue-serum", "niacinamide-10-zinc-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "OSNW": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["centella-rescue-serum", "niacinamide-10-zinc-serum"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "OSPT": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["centella-rescue-serum", "tranexamic-spot-fade-serum"],
+      "moisturizer": ["oil-free-water-gel"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  },
+  "OSPW": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "toner": ["cica-calming-toner"],
+      "serum": ["tranexamic-spot-fade-serum", "centella-rescue-serum"],
+      "moisturizer": ["peptide-firming-cream"],
+      "sunscreen": ["daily-mineral-spf50"],
+      "mask": ["pore-clay-mask"]
+    }
+  }
+}
