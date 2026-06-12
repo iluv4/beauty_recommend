@@ -68,7 +68,9 @@ export default function QuizStep({ onSubmit }: { onSubmit: (quiz: QuizAnswers) =
   return (
     <div className="mx-auto w-full max-w-md">
       <h2 className="font-display text-3xl">Four quick questions</h2>
-      <p className="mt-2 text-muted">Photos show a lot — but only you know how your skin feels.</p>
+      <p className="mt-2 text-muted">
+        Photos show a lot — but these answers complete your Skin Code.
+      </p>
 
       <section className="mt-7">
         <h3 className="font-medium">1. A few hours after cleansing, your skin feels…</h3>

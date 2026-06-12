@@ -1,13 +1,28 @@
-# Skin Studio — AI 피부 분석 & 제품 추천 위젯
+# Skin Studio — AI 피부 분석 & Skin Code 제품 추천 위젯
 
 미국 타겟 Shopify 자사몰에 임베드하는 **AI 피부 분석 위젯**입니다.
-고객이 셀카 한 장을 올리고 4개의 짧은 질문에 답하면:
+플로우: **사진 업로드 → 피부 컨디션 분석 → MBTI식 "Skin Code" 결과 → 추천 제품 링크**
 
-1. **Claude 비전 AI**가 사진에서 피부 톤(Fitzpatrick·언더톤)과 눈에 보이는 고민(홍조, 색소침착, 트러블 등)을 분석하고
-2. 퀴즈 답변과 합쳐 **피부 프로필**(피부타입 / 민감도 / 우선순위 고민)을 만든 뒤
-3. 스토어 제품의 **핵심 성분(전성분 기반)** 과 고민을 매칭하는 룰 엔진이 **단계별 루틴**(클렌저 → 토너 → 세럼 → 보습 → 선크림 + 보너스)을 추천합니다.
+1. 고객이 셀카 한 장을 올리고 4개의 짧은 질문(MBTI 테스트 느낌)에 답하면
+2. **Claude 비전 AI**가 사진에서 피부 톤(Fitzpatrick·언더톤)과 눈에 보이는 고민(홍조, 색소침착, 트러블 등)을 분석하고
+3. 퀴즈와 합쳐 **4글자 Skin Code**(16타입)와 피부 프로필을 만든 뒤
+4. **제품 매칭표(기준표)** 또는 성분↔고민 매칭 엔진이 **단계별 루틴**(클렌저 → 토너 → 세럼 → 보습 → 선크림 + 보너스)을 추천합니다.
 
 추천은 "어떤 성분이 어떤 고민에 왜 좋은지"까지 영어 문장으로 설명되어 함께 노출됩니다.
+
+## Skin Code (16타입)
+
+미국 스킨케어 커뮤니티(레딧 등)에서 익숙한 Baumann 방식과 같은 4축 구조입니다:
+
+| 축 | 글자 | 판정 근거 |
+|---|---|---|
+| Moisture | **O**ily / **D**ry | 퀴즈(세안 후 느낌) + 사진의 유분기 |
+| Sensitivity | **S**ensitive / **R**esistant | 퀴즈(반응성) + 사진의 홍조 |
+| Pigment | **P**igmented / **N (Even)** | 다크스팟·톤 불균형 고민(사진/퀴즈) |
+| Aging | **W**rinkle-care / **T**ight | 잔주름 고민 또는 40대 이상 |
+
+→ `OSPT "The Glow Guardian"` 같은 코드 + 페르소나 이름 + 한 줄 설명이 결과 화면 히어로로 노출됩니다.
+16개 페르소나 이름/문구는 `lib/skin-code.ts`에서 수정할 수 있습니다.
 
 ---
 
@@ -33,12 +48,39 @@ POST /api/analyze
 
 | 파일 | 역할 |
 |---|---|
+| `lib/skin-code.ts` | **Skin Code 16타입** — 축 판정 규칙, 페르소나 이름/문구 |
+| `lib/code-matrix.ts` | **제품 매칭표 로더** — `data/code-matrix.json`이 있으면 엔진보다 우선 적용 |
 | `lib/ingredients.ts` | **성분 지식베이스** — 고민별 유효 성분과 가중치. 순수 데이터라 자유롭게 수정 |
 | `lib/analyze-photo.ts` | Claude 비전 호출 + 데모 모드 |
 | `lib/profile.ts` | 퀴즈/사진 병합 로직 |
 | `lib/recommend.ts` | 점수 기반 추천 엔진 (점수 = 고민 가중치 × 성분 효능 + 피부타입 보너스 − 민감성 페널티) |
 | `scripts/sync-products.mjs` | Shopify Admin API → `data/products.json` 동기화 |
 | `data/products.sample.json` | 동기화 전까지 쓰는 샘플 카탈로그 17종 |
+| `data/code-matrix.sample.json` | 매칭표(기준표) 포맷 예시 |
+
+## 제품 매칭표(기준표)로 직접 매칭하기
+
+성분 엔진 대신(또는 함께) **직접 만든 기준표**로 코드별 추천을 고정할 수 있습니다.
+
+1. 스프레드시트로 **16개 코드 × 단계(클렌저/토너/세럼/보습/선크림…)** 표를 만들고
+   각 칸에 제품 **핸들**(상품 URL 마지막 부분)을 적습니다.
+2. `data/code-matrix.sample.json` 포맷대로 JSON으로 옮겨 `data/code-matrix.json`으로 저장합니다.
+
+```json
+{
+  "OSPT": {
+    "products": {
+      "cleanser": ["clarifying-gel-cleanser"],
+      "serum": ["centella-rescue-serum", "tranexamic-spot-fade-serum"],
+      "sunscreen": ["daily-mineral-spf50"]
+    }
+  }
+}
+```
+
+- 표에 **없는 코드**나 카탈로그에 없는 핸들은 자동으로 성분 엔진으로 폴백 → 일부만 채워도 동작합니다.
+- 추천 사유 문구는 매칭표를 쓰더라도 성분 정보가 있으면 자동 생성됩니다.
+- 기준표(엑셀/시트)를 그대로 주시면 JSON 변환은 금방입니다.
 
 ---
 

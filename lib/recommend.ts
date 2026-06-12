@@ -25,17 +25,27 @@ import type {
  * ingredient → concern pairs it was chosen for.
  */
 
-const CORE_STEPS: { category: ProductCategory; step: string; picks: number }[] = [
-  { category: "cleanser", step: "Step 1 · Cleanser", picks: 1 },
-  { category: "toner", step: "Step 2 · Toner", picks: 1 },
-  { category: "serum", step: "Step 3 · Treat", picks: 2 },
-  { category: "moisturizer", step: "Step 4 · Moisturize", picks: 1 },
-  { category: "sunscreen", step: "Step 5 · Protect (AM)", picks: 1 },
+export const STEP_LABELS: Record<ProductCategory, string> = {
+  cleanser: "Step 1 · Cleanser",
+  toner: "Step 2 · Toner",
+  serum: "Step 3 · Treat",
+  moisturizer: "Step 4 · Moisturize",
+  sunscreen: "Step 5 · Protect (AM)",
+  mask: "Bonus · Weekly Mask",
+  eye: "Bonus · Eye Care",
+};
+
+const CORE_STEPS: { category: ProductCategory; picks: number }[] = [
+  { category: "cleanser", picks: 1 },
+  { category: "toner", picks: 1 },
+  { category: "serum", picks: 2 },
+  { category: "moisturizer", picks: 1 },
+  { category: "sunscreen", picks: 1 },
 ];
 
-const EXTRA_STEPS: { category: ProductCategory; step: string; picks: number; when: ConcernId[] }[] = [
-  { category: "eye", step: "Bonus · Eye Care", picks: 1, when: ["dark-circles"] },
-  { category: "mask", step: "Bonus · Weekly Mask", picks: 1, when: ["oiliness", "visible-pores", "breakouts"] },
+const EXTRA_STEPS: { category: ProductCategory; picks: number; when: ConcernId[] }[] = [
+  { category: "eye", picks: 1, when: ["dark-circles"] },
+  { category: "mask", picks: 1, when: ["oiliness", "visible-pores", "breakouts"] },
 ];
 
 function scoreProduct(product: Product, profile: SkinProfile): Recommendation {
@@ -102,6 +112,16 @@ function buildWhy(rec: Recommendation, profile: SkinProfile): string {
   return parts.join(" ") || "A well-rounded staple that fits your routine.";
 }
 
+/**
+ * Scores one product against a profile and explains the fit.
+ * Used by both the automatic engine and the merchant code-matrix path.
+ */
+export function describeFit(product: Product, profile: SkinProfile): Recommendation {
+  const rec = scoreProduct(product, profile);
+  rec.why = buildWhy(rec, profile);
+  return rec;
+}
+
 export function buildRoutine(profile: SkinProfile, products: Product[]): RoutineStep[] {
   const concernIds = new Set(profile.concerns.map((c) => c.id));
   const steps = [
@@ -111,7 +131,7 @@ export function buildRoutine(profile: SkinProfile, products: Product[]): Routine
 
   const routine: RoutineStep[] = [];
 
-  for (const { category, step, picks } of steps) {
+  for (const { category, picks } of steps) {
     const ranked = products
       .filter((p) => p.category === category)
       .map((p) => scoreProduct(p, profile))
@@ -138,7 +158,7 @@ export function buildRoutine(profile: SkinProfile, products: Product[]): Routine
     }
 
     for (const rec of ranked) rec.why = buildWhy(rec, profile);
-    routine.push({ step, category, picks: ranked });
+    routine.push({ step: STEP_LABELS[category], category, picks: ranked });
   }
 
   return routine;

@@ -61,9 +61,25 @@ export interface WeightedConcern {
   source: "quiz" | "photo" | "both";
 }
 
+export interface SkinCodeAxis {
+  axis: string;
+  letter: string;
+  label: string;
+  detail: string;
+}
+
+/** MBTI-style 4-letter skin code (16 types), e.g. "OSPT". */
+export interface SkinCode {
+  code: string;
+  name: string;
+  tagline: string;
+  axes: SkinCodeAxis[];
+}
+
 export interface SkinProfile {
   skinType: SkinType;
   sensitivity: Sensitivity;
+  skinCode: SkinCode;
   tone?: SkinTone;
   concerns: WeightedConcern[];
   summary: string;

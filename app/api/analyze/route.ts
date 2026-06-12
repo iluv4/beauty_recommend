@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { AnalysisError, analyzePhoto, demoAnalysis } from "@/lib/analyze-photo";
 import { loadCatalog } from "@/lib/catalog";
+import { buildRoutineFromMatrix, loadCodeMatrix } from "@/lib/code-matrix";
 import { buildProfile } from "@/lib/profile";
 import { buildRoutine } from "@/lib/recommend";
 import { CONCERN_IDS, type AnalyzeRequest, type ConcernId } from "@/lib/types";
@@ -70,7 +71,13 @@ export async function POST(request: Request) {
 
     const profile = buildProfile(parsed.quiz, analysis, demo);
     const { products } = loadCatalog();
-    const routine = buildRoutine(profile, products);
+
+    // Merchant matching table takes priority; ingredient engine is the fallback.
+    const matrixRow = loadCodeMatrix()?.[profile.skinCode.code];
+    if (matrixRow?.name) profile.skinCode.name = matrixRow.name;
+    if (matrixRow?.tagline) profile.skinCode.tagline = matrixRow.tagline;
+    const fromMatrix = matrixRow ? buildRoutineFromMatrix(matrixRow, profile, products) : [];
+    const routine = fromMatrix.length > 0 ? fromMatrix : buildRoutine(profile, products);
 
     return NextResponse.json({ profile, routine });
   } catch (err) {

@@ -1,3 +1,4 @@
+import { computeSkinCode } from "./skin-code";
 import type {
   ConcernId,
   PhotoAnalysis,
@@ -79,6 +80,7 @@ export function buildProfile(
   return {
     skinType,
     sensitivity,
+    skinCode: computeSkinCode(skinType, sensitivity, sorted, quiz),
     tone: photo.isFace ? photo.skinTone : undefined,
     concerns: sorted,
     summary: photo.summary,

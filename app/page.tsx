@@ -12,7 +12,7 @@ type Step = "intro" | "photo" | "quiz" | "analyzing" | "results";
 const ANALYZING_MESSAGES = [
   "Reading your photo…",
   "Looking at tone and texture…",
-  "Matching concerns to ingredients…",
+  "Finding your Skin Code…",
   "Building your routine…",
 ];
 
@@ -43,15 +43,16 @@ function Intro({ onStart }: { onStart: () => void }) {
         Your skin, decoded.
       </h1>
       <p className="mt-4 text-muted">
-        One selfie and four quick questions. We&apos;ll read your skin, then build a
-        routine matched ingredient-by-ingredient to what it actually needs.
+        One selfie and four quick questions. We&apos;ll read your skin, reveal your
+        4-letter <strong className="text-foreground">Skin Code</strong>, and build a
+        routine matched ingredient-by-ingredient to it.
       </p>
 
       <ul className="mx-auto mt-8 max-w-xs space-y-3 text-left text-sm">
         {[
           "Takes about two minutes",
           "Photo analyzed in real time — never stored",
-          "Every product pick explained, ingredient by ingredient",
+          "Your Skin Code, with every product pick explained",
         ].map((t) => (
           <li key={t} className="flex items-start gap-3">
             <span className="mt-0.5 text-accent">✓</span>
