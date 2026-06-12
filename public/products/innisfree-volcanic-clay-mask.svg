@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="innisfree Super Volcanic Pore Clay Mask 2X">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e4e7ec"/>
+      <stop offset="1" stop-color="#c3ccd9"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <circle cx="300" cy="300" r="250" fill="#ffffff" opacity="0.18"/>
+  <!-- abstract bottle silhouette -->
+  <g fill="#ffffff" opacity="0.30">
+    <rect x="262" y="120" width="76" height="34" rx="8"/>
+    <rect x="232" y="158" width="136" height="300" rx="34"/>
+  </g>
+  <text x="300" y="180" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="3" fill="#2f3a4a" opacity="0.85">INNISFREE</text>
+  <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="700" fill="#2f3a4a"><tspan x="300" y="252">Super Volcanic</tspan><tspan x="300" y="311">Pore Clay Mask</tspan><tspan x="300" y="370">2X</tspan></text>
+  <text x="300" y="486" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" letter-spacing="4" fill="#2f3a4a" opacity="0.7">MASK</text>
+</svg>

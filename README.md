@@ -55,7 +55,8 @@ POST /api/analyze
 | `lib/profile.ts` | 퀴즈/사진 병합 로직 |
 | `lib/recommend.ts` | 점수 기반 추천 엔진 (점수 = 고민 가중치 × 성분 효능 + 피부타입 보너스 − 민감성 페널티) |
 | `scripts/sync-products.mjs` | Shopify Admin API → `data/products.json` 동기화 |
-| `data/products.sample.json` | 동기화 전까지 쓰는 샘플 카탈로그 17종 |
+| `scripts/gen-placeholder-images.mjs` | 샘플 카탈로그용 로컬 플레이스홀더 이미지(SVG) 생성 → `public/products/` |
+| `data/products.sample.json` | 동기화 전까지 쓰는 데모 카탈로그(실제 인기 제품 23종, 사진·링크 포함) |
 | `data/code-matrix.sample.json` | 매칭표(기준표) 포맷 예시 |
 
 ## 제품 매칭표(기준표)로 직접 매칭하기

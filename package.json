@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-products": "node scripts/sync-products.mjs"
+    "sync-products": "node scripts/sync-products.mjs",
+    "gen-images": "node scripts/gen-placeholder-images.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
