@@ -48,8 +48,14 @@ export interface PhotoFinding {
 export interface PhotoAnalysis {
   isFace: boolean;
   imageQuality: { ok: boolean; issues: string[] };
-  skinTone: SkinTone;
+  /** Tone is provider-dependent (the Perfect Corp adapter doesn't return it). */
+  skinTone?: SkinTone;
   findings: PhotoFinding[];
+  /**
+   * Perfect Corp-style condition score per metric, 0–100 where higher =
+   * better condition. Every metric gets a score, not just visible findings.
+   */
+  scores: Record<ConcernId, number>;
   /** Friendly 2–3 sentence summary written for the customer. */
   summary: string;
 }
@@ -82,6 +88,8 @@ export interface SkinProfile {
   skinCode: SkinCode;
   tone?: SkinTone;
   concerns: WeightedConcern[];
+  /** Per-metric condition scores (0–100, higher = better), for the metrics dashboard. */
+  scores: Record<ConcernId, number>;
   summary: string;
   /** True when produced without the AI photo analysis (no API key configured). */
   demo: boolean;

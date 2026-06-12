@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { AnalysisError, analyzePhoto, demoAnalysis } from "@/lib/analyze-photo";
 import { loadCatalog } from "@/lib/catalog";
 import { buildRoutineFromMatrix, loadCodeMatrix } from "@/lib/code-matrix";
+import { analyzePhotoPerfectCorp } from "@/lib/perfectcorp";
 import { buildProfile } from "@/lib/profile";
 import { buildRoutine } from "@/lib/recommend";
 import { CONCERN_IDS, type AnalyzeRequest, type ConcernId } from "@/lib/types";
@@ -61,13 +62,20 @@ export async function POST(request: Request) {
   const parsed = validate(body);
   if (typeof parsed === "string") return bad("invalid_request", parsed);
 
-  const hasKey = Boolean(process.env.ANTHROPIC_API_KEY);
-  const demo = !hasKey || !parsed.image;
+  // Analysis provider is swappable: Claude vision (default) or Perfect Corp.
+  const provider = process.env.SKIN_ANALYZER === "perfectcorp" ? "perfectcorp" : "claude";
+  const configured =
+    provider === "perfectcorp"
+      ? Boolean(process.env.PERFECTCORP_API_KEY)
+      : Boolean(process.env.ANTHROPIC_API_KEY);
+  const demo = !configured || !parsed.image;
 
   try {
     const analysis = demo
       ? demoAnalysis(parsed.quiz)
-      : await analyzePhoto(parsed.image!, parsed.quiz);
+      : provider === "perfectcorp"
+        ? await analyzePhotoPerfectCorp(parsed.image!)
+        : await analyzePhoto(parsed.image!, parsed.quiz);
 
     const profile = buildProfile(parsed.quiz, analysis, demo);
     const { products } = loadCatalog();

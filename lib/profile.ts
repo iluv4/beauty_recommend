@@ -83,6 +83,7 @@ export function buildProfile(
     skinCode: computeSkinCode(skinType, sensitivity, sorted, quiz),
     tone: photo.isFace ? photo.skinTone : undefined,
     concerns: sorted,
+    scores: photo.scores,
     summary: photo.summary,
     demo,
   };

@@ -92,6 +92,28 @@ function ProfileCard({ profile }: { profile: SkinProfile }) {
           </ul>
         </div>
       )}
+
+      <div className="mt-6">
+        <h3 className="text-sm font-medium uppercase tracking-wide text-muted">Skin metrics</h3>
+        <div className="mt-3 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
+          {(Object.entries(profile.scores) as [keyof typeof CONCERN_LABELS, number][])
+            .sort((a, b) => a[1] - b[1])
+            .map(([id, score]) => (
+              <div key={id} className="flex items-center gap-3 text-sm">
+                <span className="w-28 shrink-0 capitalize">{CONCERN_LABELS[id]}</span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+                  <div
+                    className={`h-full rounded-full ${score < 60 ? "bg-accent" : "bg-sage"}`}
+                    style={{ width: `${Math.max(4, Math.min(100, score))}%` }}
+                  />
+                </div>
+                <span className="w-7 shrink-0 text-right text-xs text-muted">
+                  {Math.round(score)}
+                </span>
+              </div>
+            ))}
+        </div>
+      </div>
     </section>
   );
 }

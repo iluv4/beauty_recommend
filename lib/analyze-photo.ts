@@ -37,6 +37,15 @@ const PhotoAnalysisSchema = z.object({
       }),
     )
     .describe("One entry per characteristic that is actually visible (severity mild or above). Omit characteristics that are not noticeable."),
+  scores: z
+    .object(
+      Object.fromEntries(
+        CONCERN_IDS.map((id) => [id, z.number()]),
+      ) as Record<(typeof CONCERN_IDS)[number], z.ZodNumber>,
+    )
+    .describe(
+      "Condition score for EVERY metric (0-100, higher = better condition), consistent with findings: prominent ≈ 30-45, moderate ≈ 45-60, mild ≈ 60-75, not noticeable ≈ 75-95. Typical healthy skin sits at 70-90; reserve <40 and >95 for clear cases.",
+    ),
   summary: z
     .string()
     .describe("2-3 warm, encouraging sentences addressed to the customer ('you/your'). US English. No medical claims, no product names."),
@@ -52,6 +61,7 @@ Rules:
 - Makeup, filters, and lighting can hide or exaggerate characteristics. If you suspect any of these, list them in imageQuality.issues and be conservative with findings.
 - If the photo does not clearly show a human face, set isFace=false, imageQuality.ok=false, and return an empty findings list.
 - fitzpatrick/undertone are estimates of apparent tone from this photo, used only for shade and formula guidance.
+- scores rate the CURRENT visible condition of each metric (100 = excellent). They must agree with findings, and metrics without findings should land in the healthy 75-95 band.
 - Base findings ONLY on the photo. The customer's quiz answers are provided purely as context so your summary reads coherently — never copy a quiz concern into findings unless you can see it.
 - The summary must be kind and confidence-building, mention 1-2 genuine strengths of the skin, and stay free of medical claims.`;
 
@@ -139,6 +149,13 @@ export function demoAnalysis(quiz: QuizAnswers): PhotoAnalysis {
     note: `Self-reported in your quiz: ${CONCERN_LABELS[id]}.`,
   }));
 
+  const scores = Object.fromEntries(
+    CONCERN_IDS.map((id) => {
+      const idx = quiz.concerns.indexOf(id);
+      return [id, idx === 0 ? 55 : idx > 0 ? 65 : 82];
+    }),
+  ) as PhotoAnalysis["scores"];
+
   return {
     isFace: true,
     imageQuality: { ok: true, issues: [] },
@@ -148,6 +165,7 @@ export function demoAnalysis(quiz: QuizAnswers): PhotoAnalysis {
       description: "Demo mode — tone analysis runs once the AI key is connected.",
     },
     findings,
+    scores,
     summary:
       "This is a demo result built from your quiz answers — connect the AI key to unlock real photo analysis. Your routine below is still matched ingredient-by-ingredient to the concerns you told us about.",
   };

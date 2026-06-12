@@ -158,13 +158,31 @@ HTML 보기로 아래를 붙여넣으세요:
 
 ---
 
+## 분석 제공자 (Claude ↔ Perfect Corp 교체 가능)
+
+사진 분석은 환경변수 하나로 갈아끼우는 구조입니다:
+
+| 제공자 | 설정 | 특징 |
+|---|---|---|
+| **Claude 비전** (기본) | `ANTHROPIC_API_KEY` | 톤(Fitzpatrick·언더톤) + 고민 + 지표 점수 + 고객용 요약문까지 생성. 계약 불필요, 호출당 과금 |
+| **Perfect Corp** | `SKIN_ANALYZER=perfectcorp` + `PERFECTCORP_API_KEY` | 전용 CV 모델의 HD 지표 점수(주름·모공·홍조 등). `lib/perfectcorp.ts` 어댑터가 PC 지표를 동일한 내부 포맷으로 변환 |
+
+두 제공자 모두 **Perfect Corp 스타일의 지표별 0–100 점수**를 출력하므로 결과 화면(지표 바 차트)·Skin Code·추천 로직은 동일하게 동작합니다.
+
+> ⚠️ `lib/perfectcorp.ts`는 PC의 공개 S2S 플로(인증→업로드→태스크→폴링) 기준으로 작성됐지만,
+> 개발 샌드박스에서 PC API에 접근할 수 없어 **실호출 검증 전**입니다. 운영 전환 전에
+> [공식 문서](https://docs.perfectcorp.com/reference/ai_skin_analysis)와 엔드포인트/필드명을 대조하세요.
+
 ## 배포 (Vercel 기준)
 
 1. 이 리포를 Vercel에 import
-2. 환경변수 설정: `ANTHROPIC_API_KEY` (+ 선택: `CLAUDE_MODEL`, `NEXT_PUBLIC_STORE_URL`)
+2. 환경변수 설정: `ANTHROPIC_API_KEY` (+ 선택: `CLAUDE_MODEL`, `NEXT_PUBLIC_STORE_URL`, `SKIN_ANALYZER`, `PERFECTCORP_API_KEY`)
 3. `data/products.json`은 gitignore 되어 있으므로, 빌드 전에 동기화하려면
    Vercel Build Command를 `npm run sync-products && npm run build`로 바꾸고
    `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_ADMIN_TOKEN`도 환경변수로 추가
+4. 참고: Vercel 무료(Hobby) 플랜은 상업적 사용이 금지라 자사몰 운영엔 Pro가 필요합니다.
+   대안으로 **Railway**($5/월~, 상업용 OK, 함수 타임아웃 없음)도 코드 수정 없이 동작합니다
+   (`next build` → `next start` 표준 구성).
 
 ---
 
