@@ -1,0 +1,42 @@
+# Temporary helper: downloads generated demo face images (the dev container
+# has no egress to the image CDN), resizes them, and commits them to this
+# branch. Removed once the images land.
+name: Fetch demo faces
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and resize
+        run: |
+          set -euo pipefail
+          sudo apt-get update -q && sudo apt-get install -y -q imagemagick
+          mkdir -p public/demo
+          base="https://d8j0ntlcm91z4.cloudfront.net/user_2zgU8WENBNYEO4lt0oTuMlue5RY"
+          declare -A files=(
+            [face-1]="hf_20260612_072847_2d7c11d0-15b7-46a2-8494-21ad65ead065.png"
+            [face-2]="hf_20260612_072857_7214cc72-94d9-43d9-96d9-c2e52eba0c22.png"
+            [face-3]="hf_20260612_072903_d0b31059-3864-4e50-8730-0aa1ff36dea0.png"
+            [face-4]="hf_20260612_072913_4df4a145-9976-4bf7-9455-4b2c8b7232ef.png"
+          )
+          for name in face-1 face-2 face-3 face-4; do
+            curl -fsSL -o /tmp/"$name".png "$base/${files[$name]}"
+            convert /tmp/"$name".png -resize 1024x1024 -quality 82 public/demo/"$name".jpg
+          done
+          ls -la public/demo
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/demo
+          git commit -m "Add demo face images"
+          git push

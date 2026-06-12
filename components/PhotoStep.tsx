@@ -3,6 +3,15 @@
 import { useRef, useState } from "react";
 import { prepareImage, type PreparedImage } from "@/lib/image";
 
+// AI-generated faces (no real people) bundled for demos — lets visitors try
+// the flow without handing over a selfie.
+const DEMO_PHOTOS = [
+  { src: "/demo/face-1.jpg", label: "Oily T-zone · 20s" },
+  { src: "/demo/face-2.jpg", label: "Dark spots · 30s" },
+  { src: "/demo/face-3.jpg", label: "Redness · 20s" },
+  { src: "/demo/face-4.jpg", label: "Fine lines · 50s" },
+];
+
 export default function PhotoStep({
   onContinue,
 }: {
@@ -23,6 +32,24 @@ export default function PhotoStep({
       setImage(await prepareImage(file));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not read that image.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDemo(src: string) {
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(src);
+      if (!res.ok) throw new Error("Could not load the sample photo.");
+      const blob = await res.blob();
+      const file = new File([blob], src.split("/").pop() ?? "demo.jpg", {
+        type: blob.type || "image/jpeg",
+      });
+      setImage(await prepareImage(file));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load the sample photo.");
     } finally {
       setBusy(false);
     }
@@ -57,26 +84,59 @@ export default function PhotoStep({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => cameraRef.current?.click()}
-              className="rounded-2xl border border-line bg-surface px-4 py-6 text-center shadow-sm transition hover:border-accent disabled:opacity-50"
-            >
-              <span className="block text-2xl">📸</span>
-              <span className="mt-2 block font-medium">Take a selfie</span>
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => uploadRef.current?.click()}
-              className="rounded-2xl border border-line bg-surface px-4 py-6 text-center shadow-sm transition hover:border-accent disabled:opacity-50"
-            >
-              <span className="block text-2xl">🖼️</span>
-              <span className="mt-2 block font-medium">Upload a photo</span>
-            </button>
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => cameraRef.current?.click()}
+                className="rounded-2xl border border-line bg-surface px-4 py-6 text-center shadow-sm transition hover:border-accent disabled:opacity-50"
+              >
+                <span className="block text-2xl">📸</span>
+                <span className="mt-2 block font-medium">Take a selfie</span>
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => uploadRef.current?.click()}
+                className="rounded-2xl border border-line bg-surface px-4 py-6 text-center shadow-sm transition hover:border-accent disabled:opacity-50"
+              >
+                <span className="block text-2xl">🖼️</span>
+                <span className="mt-2 block font-medium">Upload a photo</span>
+              </button>
+            </div>
+
+            <div className="mt-6 flex items-center gap-3 text-xs uppercase tracking-wide text-muted">
+              <span className="h-px flex-1 bg-line" aria-hidden />
+              No photo handy? Try a sample
+              <span className="h-px flex-1 bg-line" aria-hidden />
+            </div>
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {DEMO_PHOTOS.map((d) => (
+                <button
+                  key={d.src}
+                  type="button"
+                  disabled={busy}
+                  onClick={() => handleDemo(d.src)}
+                  className="group text-center disabled:opacity-50"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={d.src}
+                    alt={`Sample face: ${d.label}`}
+                    loading="lazy"
+                    className="aspect-square w-full rounded-2xl border border-line object-cover shadow-sm transition group-hover:border-accent"
+                  />
+                  <span className="mt-1.5 block text-[11px] leading-tight text-muted">
+                    {d.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-center text-[11px] text-muted">
+              Samples are AI-generated faces — not real people.
+            </p>
+          </>
         )}
         <input
           ref={cameraRef}
